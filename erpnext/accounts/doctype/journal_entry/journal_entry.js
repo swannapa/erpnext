@@ -1,9 +1,9 @@
 // Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
-
-frappe.provide("erpnext.accounts");
+// test commit  ....
+///...
 frappe.provide("erpnext.journal_entry");
-
+frappe.provide("erpnext.accounts");
 
 frappe.ui.form.on("Journal Entry", {
 	refresh: function(frm) {
@@ -36,10 +36,10 @@ frappe.ui.form.on("Journal Entry", {
 	multi_currency: function(frm) {
 		erpnext.journal_entry.toggle_fields_based_on_currency(frm);
 	},
-	
+
 	posting_date: function(frm) {
 		if(!frm.doc.multi_currency || !frm.doc.posting_date) return;
-		
+
 		$.each(frm.doc.accounts || [], function(i, row) {
 			erpnext.journal_entry.set_exchange_rate(frm, row.doctype, row.name);
 		})
@@ -299,7 +299,7 @@ cur_frm.cscript.voucher_type = function(doc, cdt, cdn) {
 		});
 		refresh_field("accounts");
 	}
-	
+
 	if((!(doc.accounts || []).length) || ((doc.accounts || []).length==1 && !doc.accounts[0].account)) {
 		if(in_list(["Bank Entry", "Cash Entry"], doc.voucher_type)) {
 			return frappe.call({
@@ -378,7 +378,7 @@ frappe.ui.form.on("Journal Entry Account", {
 			});
 		}
 	},
-	
+
 	debit_in_account_currency: function(frm, cdt, cdn) {
 		erpnext.journal_entry.set_exchange_rate(frm, cdt, cdn);
 	},
