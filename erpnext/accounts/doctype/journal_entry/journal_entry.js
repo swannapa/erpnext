@@ -1,7 +1,7 @@
 // Copyright (c) 2015, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
 // test commit  ....
-///...
+
 frappe.provide("erpnext.journal_entry");
 frappe.provide("erpnext.accounts");
 
