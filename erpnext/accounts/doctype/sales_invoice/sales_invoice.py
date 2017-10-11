@@ -27,6 +27,7 @@ form_grid_templates = {
 }
 
 class SalesInvoice(SellingController):
+	print "test"
 	def __init__(self, *args, **kwargs):
 		super(SalesInvoice, self).__init__(*args, **kwargs)
 		self.status_updater = [{

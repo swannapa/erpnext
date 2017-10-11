@@ -259,9 +259,9 @@ class AccountsController(TransactionBase):
 		if not account_currency:
 			account_currency = get_account_currency(gl_dict.account)
 
-		if gl_dict.account and self.doctype not in ["Journal Entry", 
+		if gl_dict.account and self.doctype not in ["Journal Entry",
 			"Period Closing Voucher", "Payment Entry"]:
-			
+
 			self.validate_account_currency(gl_dict.account, account_currency)
 			set_balance_in_account_currency(gl_dict, account_currency, self.get("conversion_rate"), self.company_currency)
 
@@ -318,11 +318,9 @@ class AccountsController(TransactionBase):
 		order_list = list(set([d.get(order_field)
 			for d in self.get("items") if d.get(order_field)]))
 
-		journal_entries = get_advance_journal_entries(party_type, party, party_account,
-			amount_field, order_doctype, order_list, include_unallocated)
+		journal_entries = get_advance_journal_entries(party_type, party, party_account,	amount_field, order_doctype, order_list, include_unallocated)
 
-		payment_entries = get_advance_payment_entries(party_type, party, party_account,
-			order_doctype, order_list, include_unallocated)
+		payment_entries = get_advance_payment_entries(party_type, party, party_account,	order_doctype, order_list, include_unallocated)
 
 		res = journal_entries + payment_entries
 
@@ -741,8 +739,7 @@ def get_advance_payment_entries(party_type, party, party_account,
 				t2.reference_name as against_order, t1.posting_date
 			from `tabPayment Entry` t1, `tabPayment Entry Reference` t2
 			where
-				t1.name = t2.parent and t1.{0} = %s and t1.payment_type = %s
-				and t1.party_type = %s and t1.party = %s and t1.docstatus = 1
+				t1.name = t2.parent and t1.docstatus = 1
 				and t2.reference_doctype = %s {1}
 		""".format(party_account_field, reference_condition),
 		[party_account, payment_type, party_type, party, order_doctype] + order_list, as_dict=1)
