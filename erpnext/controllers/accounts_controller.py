@@ -738,11 +738,8 @@ def get_advance_payment_entries(party_type, party, party_account,
 				t1.remarks, t2.allocated_amount as amount, t2.name as reference_row,
 				t2.reference_name as against_order, t1.posting_date
 			from `tabPayment Entry` t1, `tabPayment Entry Reference` t2
-			where
-				t1.name = t2.parent and t1.docstatus = 1
-				and t2.reference_doctype = %s {1}
-		""".format(party_account_field, reference_condition),
-		[party_account, payment_type, party_type, party, order_doctype] + order_list, as_dict=1)
+			where t1.name = t2.parent """,
+		[] + order_list, as_dict=1)
 
 	if include_unallocated:
 		unallocated_payment_entries = frappe.db.sql("""
