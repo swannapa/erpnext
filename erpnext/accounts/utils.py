@@ -342,7 +342,8 @@ def check_if_advance_entry_modified(args):
 			""".format(party_account_field), args)
 
 	if not ret:
-		throw(_(args.voucher_type))
+		throw(_(args.get("dr_or_cr") +", "+ args.account +", account:"+ args.party_type+", party_type:"+ \
+		args.party_type+", voucher_no:"+ args.voucher_no+", voucher_detail_no:"+ args.voucher_detail_no))
 		#throw(_("""Payment Entry has been modified after you pulled it. Please pull it again."""))
 
 def validate_allocated_amount(args):
