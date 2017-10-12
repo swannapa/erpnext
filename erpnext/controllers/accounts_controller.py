@@ -687,6 +687,37 @@ def set_balance_in_account_currency(gl_dict, account_currency=None, conversion_r
 			else flt(gl_dict.credit / conversion_rate, 2)
 
 
+def get_advance_journal_entries(party_type, party, party_account, amount_field,
+		order_doctype, order_list, include_unallocated=True):
+
+	dr_or_cr = "credit_in_account_currency" if party_type=="Customer" else "debit_in_account_currency"
+
+	conditions = []
+	if include_unallocated:
+		conditions.append("ifnull(t2.reference_name, '')=''")
+
+	if order_list:
+		order_condition = ', '.join(['%s'] * len(order_list))
+		conditions.append(" (t2.reference_type = '{0}' and ifnull(t2.reference_name, '') in ({1}))"\
+			.format(order_doctype, order_condition))
+
+	reference_condition = " and (" + " or ".join(conditions) + ")" if conditions else ""
+
+	journal_entries = frappe.db.sql("""
+		select
+			"Journal Entry" as reference_type, t1.name as reference_name,
+			t1.remark as remarks, t2.{0} as amount, t2.name as reference_row,
+			t2.reference_name as against_order
+		from
+			`tabJournal Entry` t1, `tabJournal Entry Account` t2
+		where
+			t1.name = t2.parent and t2.account = 'account'
+			and {1} > 0 {2}
+		order by t1.posting_date""".format(amount_field, dr_or_cr, reference_condition),
+		[] + order_list, as_dict=1)
+
+	return list(journal_entries)
+
 def get_advance_payment_entries(party_type, party, party_account,
 		order_doctype, order_list=None, include_unallocated=True, against_all_orders=False):
 	party_account_field = "paid_from" if party_type == "Customer" else "paid_to"
