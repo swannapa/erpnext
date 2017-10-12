@@ -711,7 +711,7 @@ def get_advance_journal_entries(party_type, party, party_account, amount_field,
 		from
 			`tabJournal Entry` t1, `tabJournal Entry Account` t2
 		where
-			t1.name = t2.parent and t2.account = 'account'
+			t1.name = t2.parent
 			and {1} > 0 {2}
 		order by t1.posting_date""".format(amount_field, dr_or_cr, reference_condition),
 		[] + order_list, as_dict=1)
