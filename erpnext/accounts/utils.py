@@ -316,8 +316,7 @@ def check_if_advance_entry_modified(args):
 	if args.voucher_type == "Journal Entry":
 		ret = frappe.db.sql("""
 			select t2.{dr_or_cr} from `tabJournal Entry` t1, `tabJournal Entry Account` t2
-			where t1.name = t2.parent and t2.account = %(account)s
-			and t2.party_type = %(party_type)s and t2.party = %(party)s
+			where t1.name = t2.parent
 			and (t2.reference_type is null or t2.reference_type in ("", "Sales Order", "Purchase Order"))
 			and t1.name = %(voucher_no)s and t2.name = %(voucher_detail_no)s
 			and t1.docstatus=1 """.format(dr_or_cr = args.get("dr_or_cr")), args)
@@ -342,9 +341,7 @@ def check_if_advance_entry_modified(args):
 			""".format(party_account_field), args)
 
 	if not ret:
-		throw(_(args.get("dr_or_cr") +", "+ args.account +", account:"+ args.party_type+", party_type:"+ \
-		args.party_type+", voucher_no:"+ args.voucher_no+", voucher_detail_no:"+ args.voucher_detail_no))
-		#throw(_("""Payment Entry has been modified after you pulled it. Please pull it again."""))
+		throw(_("""Payment Entry has been modified after you pulled it. Please pull it again."""))
 
 def validate_allocated_amount(args):
 	if args.get("allocated_amount") < 0:
