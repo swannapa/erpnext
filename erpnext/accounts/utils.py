@@ -342,7 +342,8 @@ def check_if_advance_entry_modified(args):
 			""".format(party_account_field), args)
 
 	if not ret:
-		throw(_("""Payment Entry has been modified after you pulled it. Please pull it again."""))
+		throw(_(args.voucher_type))
+		#throw(_("""Payment Entry has been modified after you pulled it. Please pull it again."""))
 
 def validate_allocated_amount(args):
 	if args.get("allocated_amount") < 0:
@@ -630,7 +631,7 @@ def get_outstanding_invoices(party_type, party, account, condition=None):
 			'invoice_amount': flt(d.invoice_amount),
 			'payment_amount': flt(d.payment_amount),
 			'outstanding_amount': flt(d.invoice_amount - d.payment_amount, precision),
-			'due_date': frappe.db.get_value(d.voucher_type, d.voucher_no, 
+			'due_date': frappe.db.get_value(d.voucher_type, d.voucher_no,
 				"posting_date" if party_type=="Employee" else "due_date"),
 		}))
 
