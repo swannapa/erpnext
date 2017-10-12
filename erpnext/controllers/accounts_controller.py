@@ -709,12 +709,9 @@ def get_advance_journal_entries(party_type, party, party_account, amount_field,
 		from
 			`tabJournal Entry` t1, `tabJournal Entry Account` t2
 		where
-			t1.name = t2.parent and t2.account = %s
-			and t2.party_type = %s and t2.party = %s
-			and t2.is_advance = 'Yes' and t1.docstatus = 1
-			and {1} > 0 {2}
-		order by t1.posting_date""".format(amount_field, dr_or_cr, reference_condition),
-		[party_account, party_type, party] + order_list, as_dict=1)
+			t1.name = t2.parent
+		order by t1.posting_date""".format(amount_field, ),
+		[] + order_list, as_dict=1)
 
 	return list(journal_entries)
 
@@ -733,12 +730,17 @@ def get_advance_payment_entries(party_type, party, party_account,
 			order_list = []
 
 		payment_entries_against_order = frappe.db.sql("""
-			select "Payment Entry" as reference_type, t1.name as reference_name,
+			select
+				"Payment Entry" as reference_type, t1.name as reference_name,
 				t1.remarks, t2.allocated_amount as amount, t2.name as reference_row,
 				t2.reference_name as against_order, t1.posting_date
 			from `tabPayment Entry` t1, `tabPayment Entry Reference` t2
-			where t1.name = t2.parent """,
-		[] + order_list, as_dict=1)
+			where
+				t1.name = t2.parent and t1.{0} = %s and t1.payment_type = %s
+				and t1.party_type = %s and t1.party = %s and t1.docstatus = 1
+				and t2.reference_doctype = %s {1}
+		""".format(party_account_field, reference_condition),
+		[party_account, payment_type, party_type, party, order_doctype] + order_list, as_dict=1)
 
 	if include_unallocated:
 		unallocated_payment_entries = frappe.db.sql("""
